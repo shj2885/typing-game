@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>과일 타자 게임</title>
+  <style>
+    :root { color-scheme: light; }
+    * { box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+      color: #27313d;
+      background: linear-gradient(135deg, #fff4dd, #e4f8ed);
+    }
+    main {
+      width: min(92vw, 520px);
+      padding: 42px 34px;
+      text-align: center;
+      background: rgba(255, 255, 255, .9);
+      border-radius: 24px;
+      box-shadow: 0 18px 50px rgba(47, 99, 72, .18);
+    }
+    h1 { margin: 0 0 28px; font-size: 1.8rem; }
+    .label { margin: 0; color: #68747e; font-size: .95rem; }
+    #word {
+      min-height: 1.35em;
+      margin: 10px 0 28px;
+      color: #e65c3b;
+      font-size: clamp(2.5rem, 12vw, 4.5rem);
+      font-weight: 800;
+      letter-spacing: .06em;
+    }
+    input {
+      width: 100%;
+      padding: 16px 18px;
+      border: 2px solid #ccd9d0;
+      border-radius: 14px;
+      outline: none;
+      font: inherit;
+      font-size: 1.3rem;
+      text-align: center;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    input:focus { border-color: #45a66a; box-shadow: 0 0 0 4px #d9f2e1; }
+    #progress { margin: 20px 0 0; color: #68747e; }
+    #message { min-height: 1.5em; margin: 12px 0 0; color: #25864c; font-weight: 700; }
+    button {
+      margin-top: 22px;
+      padding: 10px 18px;
+      border: 0;
+      border-radius: 10px;
+      color: white;
+      background: #45a66a;
+      font: inherit;
+      cursor: pointer;
+    }
+    button:hover { background: #328753; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>🍓 과일 타자 게임</h1>
+    <p class="label">화면의 단어를 그대로 입력하세요</p>
+    <div id="word" aria-live="polite"></div>
+    <input id="answer" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="단어 입력" autofocus>
+    <p id="progress"></p>
+    <p id="message" aria-live="polite"></p>
+    <button id="restart" type="button">처음부터 다시 하기</button>
+  </main>
+
+  <script>
+    // 타자게임 단어.txt에 작성된 목록입니다. 직접 파일로 열어도 실행되도록 포함했습니다.
+    const words = ["사과", "바나나", "포도", "딸기", "수박", "복숭아", "오렌지", "망고"];
+    const wordElement = document.querySelector("#word");
+    const answer = document.querySelector("#answer");
+    const progress = document.querySelector("#progress");
+    const message = document.querySelector("#message");
+    const restart = document.querySelector("#restart");
+    let index = 0;
+
+    function showWord() {
+      const finished = index === words.length;
+      wordElement.textContent = finished ? "완료!" : words[index];
+      progress.textContent = finished ? `${words.length}개 단어를 모두 입력했습니다.` : `${index + 1} / ${words.length}`;
+      message.textContent = finished ? "훌륭해요!" : "";
+      answer.value = "";
+      answer.disabled = finished;
+      if (!finished) answer.focus();
+    }
+
+    answer.addEventListener("input", () => {
+      if (answer.value === words[index]) {
+        index += 1;
+        showWord();
+      }
+    });
+
+    restart.addEventListener("click", () => {
+      index = 0;
+      showWord();
+    });
+
+    showWord();
+  </script>
+</body>
+</html>
